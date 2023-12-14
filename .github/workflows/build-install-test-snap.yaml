@@ -11,12 +11,12 @@ on:
         type: string
 
 jobs:
-  triage:
+  build-install-test-snap:
     runs-on: ubuntu-latest
     outputs:
       snap-file: ${{ steps.build-snap.outputs.snap }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         ref: '${{ inputs.branch-name }}'
     - uses: snapcore/action-build@v1
@@ -30,5 +30,5 @@ jobs:
         snap info ${{ inputs.snap-name }}
     - uses: actions/upload-artifact@v3
       with:
-        name: ${{ inputs.snap-name }}
+        name: ${{ inputs.snap-name }}-${{ inputs.branch-name }}
         path: ${{ steps.build-snap.outputs.snap }}

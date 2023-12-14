@@ -11,7 +11,7 @@ on:
         type: string
 
 jobs:
-  triage:
+  build-install-test-snap:
     runs-on: ubuntu-latest
     outputs:
       snap-file: ${{ steps.build-snap.outputs.snap }}

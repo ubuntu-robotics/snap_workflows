@@ -28,7 +28,12 @@ jobs:
     # Do some testing with the snap
     - run: |
         snap info ${{ inputs.snap-name }}
+    # Get branch name without forbidden character
+    - name: Branch name
+      id: branch-name
+      run: |
+        echo "BRANCH_NAME=$(echo ${{ inputs.branch-name }} | sed "s|\/|\-|")" >> "$GITHUB_OUTPUT"
     - uses: actions/upload-artifact@v3
       with:
-        name: ${{ inputs.snap-name }}-${{ inputs.branch-name }}
+        name: ${{ inputs.snap-name }}-${{ steps.branch-name.outputs.BRANCH_NAME }}
         path: ${{ steps.build-snap.outputs.snap }}

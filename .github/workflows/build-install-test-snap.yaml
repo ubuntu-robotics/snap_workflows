@@ -12,9 +12,9 @@ on:
       snapcraft-args:
         required: false
         type: string
-      enable-experimental-extensions-env:
+      snapcraft-env:
         required: false
-        type: boolean
+        type: string
 
 jobs:
   build-install-test-snap:
@@ -25,9 +25,9 @@ jobs:
     - uses: actions/checkout@v4
       with:
         ref: '${{ inputs.branch-name }}'
+    - name: Set the environment variable
+      run: echo SNAPCRAFT_ENV='${{ inputs.snapcraft-env }}' >> $GITHUB_ENV
     - uses: snapcore/action-build@v1
-      env:
-        SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS : '${{ inputs.enable-experimental-extensions-env }}'
       with:
         snapcraft-args: '${{ inputs.snapcraft-args }}'
       id: build-snap

@@ -9,6 +9,9 @@ on:
       branch-name:
         required: true
         type: string
+      snapcraft-args:
+        required: false
+        type: string
 
 jobs:
   build-install-test-snap:
@@ -20,6 +23,8 @@ jobs:
       with:
         ref: '${{ inputs.branch-name }}'
     - uses: snapcore/action-build@v1
+      with:
+        snapcraft-args: '${{ inputs.snapcraft-args }}'
       id: build-snap
 
     # Make sure the snap is installable

@@ -26,7 +26,6 @@ jobs:
       with:
         ref: '${{ inputs.branch-name }}'
     - uses: snapcore/action-build@v1
-      if: ${{ inputs.enable-experimental-extensions-env }}
       env:
         SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS : '${{ inputs.enable-experimental-extensions-env }}'
       with:

@@ -28,7 +28,8 @@ jobs:
     - name: Set the environment variable
       run: echo SNAPCRAFT_ENV='${{ inputs.snapcraft-env }}' >> $GITHUB_ENV
     - uses: snapcore/action-build@v1
-      run: echo $SNAPCRAFT_ENV
+      env:
+        SNAPCRAFT_ENV: ${{ env.SNAPCRAFT_ENV }}
       with:
         snapcraft-args: '${{ inputs.snapcraft-args }}'
       id: build-snap

@@ -1,0 +1,37 @@
+name: build-install-test-snap
+
+on:
+  workflow_call:
+    inputs:
+      snap-name:
+        required: true
+        type: string
+      branch-name:
+        required: true
+        type: string
+      snapcraft-args:
+        required: false
+        type: string
+      enable-experimental-extensions-env:
+        required: false
+        type: boolean
+
+jobs:
+  build-install-test-snap:
+    runs-on: ubuntu-latest
+    outputs:
+      snap-file: ${{ steps.build-snap.outputs.snap }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: '${{ inputs.branch-name }}'
+    - uses: snapcore/action-build@v1
+      env:
+        SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS : '${{ inputs.enable-experimental-extensions-env }}'
+      with:
+        snapcraft-args: '${{ inputs.snapcraft-args }}'
+      id: build-snap
+
+    # Make sure the snap is installable
+    - run: |
+        sudo snap install ${{ steps.build-snap.outputs.snap }} --devmode

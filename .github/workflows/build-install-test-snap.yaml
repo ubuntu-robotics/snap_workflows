@@ -12,6 +12,9 @@ on:
       snapcraft-args:
         required: false
         type: string
+      enable-experimental-extensions-env:
+        required: false
+        type: boolean
 
 jobs:
   build-install-test-snap:
@@ -23,6 +26,8 @@ jobs:
       with:
         ref: '${{ inputs.branch-name }}'
     - uses: snapcore/action-build@v1
+      env:
+        SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS : '${{ inputs.enable-experimental-extensions-env }}'
       with:
         snapcraft-args: '${{ inputs.snapcraft-args }}'
       id: build-snap

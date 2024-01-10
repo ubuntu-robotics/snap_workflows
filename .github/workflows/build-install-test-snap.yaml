@@ -12,6 +12,9 @@ on:
       snapcraft-args:
         required: false
         type: string
+      snap-install-args:
+        required: false
+        type: string
       enable-experimental-extensions-env:
         required: false
         type: boolean
@@ -37,10 +40,15 @@ jobs:
       id: build-snap
 
     # Make sure the snap is installable
-    - name: Install snap
+    - name: Install snap with flags
+      if: inputs.snap-install-args != ''
       run: |
-        sudo snap install ${{ steps.build-snap.outputs.snap }} --devmode
-
+        sudo snap install ${{ steps.build-snap.outputs.snap }} '${{ inputs.snap-install-args }}'
+    - name: Install snap without flags
+      if: inputs.snap-install-args == ''
+      run: |
+        sudo snap install ${{ steps.build-snap.outputs.snap }}
+  
     - name: Run custom test script
       if: inputs.test-script != ''
       shell: bash

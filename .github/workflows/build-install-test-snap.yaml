@@ -45,7 +45,7 @@ jobs:
       if: inputs.test-script != ''
       shell: bash
       run: |
-        cat > test-script.sh << EOF
+        cat > test-script.sh << 'EOF'
           ${{ inputs.test-script }}
         EOF
         cat test-script.sh

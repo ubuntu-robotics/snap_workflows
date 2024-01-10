@@ -15,6 +15,10 @@ on:
       enable-experimental-extensions-env:
         required: false
         type: boolean
+      test-script:
+        description: "Custom script to run some custom snap testing"
+        required: false
+        type: string  
 
 jobs:
   build-install-test-snap:
@@ -33,10 +37,22 @@ jobs:
       id: build-snap
 
     # Make sure the snap is installable
-    - run: |
+    - name: Install snap
+      run: |
         sudo snap install ${{ steps.build-snap.outputs.snap }} --devmode
-    # Do some testing with the snap
-    - run: |
+
+    - name: Run custom test script
+      if: inputs.test-script != ''
+      shell: bash
+      run: |
+        cat > test-script.sh << 'EOF'
+          ${{ inputs.test-script }}
+        EOF
+        bash test-script.sh
+    # Do some default testing with the snap
+    - name: Test info snap
+      if: inputs.test-script == ''
+      run: |
         snap info ${{ inputs.snap-name }}
     # Get branch name without forbidden character
     - name: Branch name

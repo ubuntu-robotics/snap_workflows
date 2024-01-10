@@ -42,7 +42,7 @@ jobs:
     # Make sure the snap is installable
     - name: Install snap
       run: |
-        sudo snap install ${{ steps.build-snap.outputs.snap }}
+        sudo snap install ${{ steps.build-snap.outputs.snap }} '${{ inputs.snap-install-args }}'
 
     - name: Run custom test script
       if: inputs.test-script != ''

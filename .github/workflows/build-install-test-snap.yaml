@@ -48,7 +48,8 @@ jobs:
         cat > test-script.sh << EOF
           ${{ inputs.test-script }}
         EOF
-        source test-script.sh
+        cat test-script.sh
+        bash test-script.sh
     # Do some default testing with the snap
     - name: Test info snap
       if: inputs.test-script == ''

@@ -3,6 +3,10 @@ name: build-install-test-snap
 on:
   workflow_call:
     inputs:
+      ubuntu-image:
+        required: false
+        type: string
+        default: "ubuntu-latest"
       snap-name:
         required: true
         type: string
@@ -21,11 +25,11 @@ on:
       test-script:
         description: "Custom script to run some custom snap testing"
         required: false
-        type: string  
+        type: string
 
 jobs:
   build-install-test-snap:
-    runs-on: ubuntu-latest
+    runs-on: '${{ inputs.ubuntu-image }}'
     outputs:
       snap-file: ${{ steps.build-snap.outputs.snap }}
     steps:

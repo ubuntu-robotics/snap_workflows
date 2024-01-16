@@ -60,11 +60,11 @@ jobs:
     - name: Install snap with flags
       if: inputs.snap-install-args != ''
       run: |
-        lxc exec lxc-container -- sudo snap install ${{ steps.build-snap.outputs.snap }} '${{ inputs.snap-install-args }}'
+        lxc exec lxc-container -- sudo snap install /home/ubuntu/${{ steps.build-snap.outputs.snap }} '${{ inputs.snap-install-args }}'
     - name: Install snap without flags
       if: inputs.snap-install-args == ''
       run: |
-        lxc exec lxc-container -- sudo snap install ${{ steps.build-snap.outputs.snap }}
+        lxc exec lxc-container -- sudo snap install /home/ubuntu/${{ steps.build-snap.outputs.snap }}
   
     - name: Run custom test script
       if: inputs.test-script != ''
@@ -73,7 +73,8 @@ jobs:
         cat > test-script.sh << 'EOF'
           ${{ inputs.test-script }}
         EOF
-        lxc exec lxc-container -- test-script.sh
+        lxc file push test-script.sh lxc-container/home/ubuntu/
+        lxc exec lxc-container -- bash /home/ubuntu/test-script.sh
     # Do some default testing with the snap
     - name: Test info snap
       if: inputs.test-script == ''

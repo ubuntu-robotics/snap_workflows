@@ -10,7 +10,7 @@ on:
       snapcraft-channel:
         required: false
         type: string
-        default: "stable"
+        default: "latest/stable"
       snap-name:
         required: true
         type: string

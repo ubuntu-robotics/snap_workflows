@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: "ubuntu-latest"
+      snapcraft-channel:
+        required: false
+        type: string
+        default: "latest/stable"
       snap-name:
         required: true
         type: string
@@ -40,6 +44,7 @@ jobs:
       env:
         SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS : '${{ inputs.enable-experimental-extensions-env }}'
       with:
+        snapcraft-channel: '${{ inputs.snapcraft-channel }}'
         snapcraft-args: '${{ inputs.snapcraft-args }}'
       id: build-snap
 

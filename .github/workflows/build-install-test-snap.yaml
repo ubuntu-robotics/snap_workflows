@@ -48,7 +48,7 @@ jobs:
       env:
         SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS : '${{ inputs.enable-experimental-extensions-env }}'
       with:
-        path: ${{ input.snapcraft-build-path }}
+        path: ${{ inputs.snapcraft-build-path }}
         snapcraft-channel: '${{ inputs.snapcraft-channel }}'
         snapcraft-args: '${{ inputs.snapcraft-args }}'
       id: build-snap

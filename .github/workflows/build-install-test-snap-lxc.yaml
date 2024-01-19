@@ -49,6 +49,7 @@ jobs:
     needs: build
     steps:
     - uses: actions/download-artifact@v3
+      name: ${{ inputs.snap-name }}-${{ inputs.branch-name }}
       with:
         path: .
     - name: Setup LXD
@@ -58,25 +59,25 @@ jobs:
     - name: Launch container
       run: |
         lxc launch '${{ inputs.lxc-image }}' lxc-container
-    - uses: actions/checkout@v4
-      with:
-        ref: '${{ inputs.branch-name }}'
+        sleep 10
     - name: Push snap to lxc container
       run: |
-        lxc file push ${{needs.build.outputs.snap-file}} lxc-container/home/ubuntu/
+        cd ${{ inputs.snap-name }}-${{ inputs.branch-name }}
+        lxc file push ${{ inputs.snap-name }}_*.snap lxc-container/
     - name: Install snap with flags
       if: inputs.snap-install-args != ''
       run: |
-        lxc exec lxc-container -- sudo snap install /home/ubuntu/${{needs.build.outputs.snap-file}} '${{ inputs.snap-install-args }}'
+        lxc list
+        lxc exec lxc-container -- sh -c "cd .. && sudo snap install ${{ inputs.snap-name }}_*.snap '${{ inputs.snap-install-args }}'"
     - name: Install snap without flags
       if: inputs.snap-install-args == ''
       run: |
-        lxc exec lxc-container -- sudo snap install /home/ubuntu/${{needs.build.outputs.snap-file}}
+        lxc exec lxc-container -- sh -c "cd .. && sudo snap install ${{ inputs.snap-name }}_*.snap"
     - name: Run custom test script
       shell: bash
       run: |
         cat > test-script.sh << 'EOF'
           ${{ inputs.test-script }}
         EOF
-        lxc file push test-script.sh lxc-container/home/ubuntu/
-        lxc exec lxc-container -- bash /home/ubuntu/test-script.sh
+        lxc file push test-script.sh lxc-container/
+        lxc exec lxc-container -- sh -c "cd .. && bash /test-script.sh"

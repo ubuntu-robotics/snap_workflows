@@ -6,6 +6,10 @@ on:
       lxc-image:
         required: true
         type: string
+      ubuntu-image:
+        required: false
+        type: string
+        default: "ubuntu-latest"
       snapcraft-channel:
         required: false
         type: string
@@ -31,11 +35,21 @@ on:
         type: string
 
 jobs:
-  build-install-test-snap:
+  build:
+    uses: ubuntu-robotics/snap_workflows/.github/workflows/build-install-test-snap.yaml@main
+    with:
+      ubuntu-image: ${{ inputs.ubuntu-image }}
+      branch-name: ${{ inputs.branch-name }}
+      snap-name: ${{ inputs.snap-name }}
+      snap-install-args: ${{ inputs.snap-install-args }}
+
+  test-on-lxc:
     runs-on: ubuntu-latest
-    outputs:
-      snap-file: ${{ steps.build-snap.outputs.snap }}
+    needs: build
     steps:
+    - uses: actions/download-artifact@v3
+      with:
+        path: .
     - name: Setup LXD
       uses: canonical/setup-lxd@v0.1.1
       with:
@@ -46,28 +60,18 @@ jobs:
     - uses: actions/checkout@v4
       with:
         ref: '${{ inputs.branch-name }}'
-    - uses: snapcore/action-build@v1
-      env:
-        SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS : '${{ inputs.enable-experimental-extensions-env }}'
-      with:
-        snapcraft-channel: '${{ inputs.snapcraft-channel }}'
-        snapcraft-args: '${{ inputs.snapcraft-args }}'
-      id: build-snap
     - name: Push snap to lxc container
       run: |
-        lxc file push ${{ steps.build-snap.outputs.snap }} lxc-container/home/ubuntu/
-    # Make sure the snap is installable
+        lxc file push ${{needs.build.outputs.snap-file}} lxc-container/home/ubuntu/
     - name: Install snap with flags
       if: inputs.snap-install-args != ''
       run: |
-        lxc exec lxc-container -- sudo snap install /home/ubuntu/${{ steps.build-snap.outputs.snap }} '${{ inputs.snap-install-args }}'
+        lxc exec lxc-container -- sudo snap install /home/ubuntu/${{needs.build.outputs.snap-file}} '${{ inputs.snap-install-args }}'
     - name: Install snap without flags
       if: inputs.snap-install-args == ''
       run: |
-        lxc exec lxc-container -- sudo snap install /home/ubuntu/${{ steps.build-snap.outputs.snap }}
-  
+        lxc exec lxc-container -- sudo snap install /home/ubuntu/${{needs.build.outputs.snap-file}}
     - name: Run custom test script
-      if: inputs.test-script != ''
       shell: bash
       run: |
         cat > test-script.sh << 'EOF'
@@ -75,17 +79,3 @@ jobs:
         EOF
         lxc file push test-script.sh lxc-container/home/ubuntu/
         lxc exec lxc-container -- bash /home/ubuntu/test-script.sh
-    # Do some default testing with the snap
-    - name: Test info snap
-      if: inputs.test-script == ''
-      run: |
-        lxc exec lxc-container -- snap info ${{ inputs.snap-name }}
-    # Get branch name without forbidden character
-    - name: Branch name
-      id: branch-name
-      run: |
-        echo "BRANCH_NAME=$(echo ${{ inputs.branch-name }} | sed "s|\/|\-|")" >> "$GITHUB_OUTPUT"
-    - uses: actions/upload-artifact@v3
-      with:
-        name: ${{ inputs.snap-name }}-${{ steps.branch-name.outputs.BRANCH_NAME }}
-        path: ${{ steps.build-snap.outputs.snap }}

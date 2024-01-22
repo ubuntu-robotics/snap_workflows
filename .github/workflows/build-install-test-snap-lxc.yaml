@@ -58,6 +58,10 @@ jobs:
       run: |
         lxc launch '${{ inputs.lxc-image }}' lxc-container
         lxc exec lxc-container -- cloud-init status --wait
+        until lxc exec lxc-container -- getent passwd ubuntu; do
+          echo "Waiting for the ubuntu user."
+          sleep 0.25
+        done
     - name: Push snap to lxc container
       run: |
         cd ${{ inputs.snap-name }}-${{ inputs.branch-name }}
@@ -65,12 +69,11 @@ jobs:
     - name: Install snap with flags
       if: inputs.snap-install-args != ''
       run: |
-        lxc list
-        lxc exec lxc-container -- sudo snap install /home/ubuntu/${{ inputs.snap-name }}_*.snap '${{ inputs.snap-install-args }}'
+        lxc exec --user ubuntu lxc-container -- sudo snap install /home/ubuntu/${{ inputs.snap-name }}_*.snap '${{ inputs.snap-install-args }}'
     - name: Install snap without flags
       if: inputs.snap-install-args == ''
       run: |
-        lxc exec lxc-container -- sudo snap install /home/ubuntu/${{ inputs.snap-name }}_*.snap
+        lxc exec --user ubuntu lxc-container -- sudo snap install /home/ubuntu/${{ inputs.snap-name }}_*.snap
     - name: Run custom test script
       shell: bash
       run: |
@@ -78,4 +81,4 @@ jobs:
           ${{ inputs.test-script }}
         EOF
         lxc file push test-script.sh lxc-container/home/ubuntu/
-        lxc exec lxc-container -- bash /home/ubuntu/test-script.sh
+        lxc exec --user ubuntu lxc-container -- bash /home/ubuntu/test-script.sh

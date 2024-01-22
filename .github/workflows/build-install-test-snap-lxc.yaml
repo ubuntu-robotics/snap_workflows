@@ -59,25 +59,24 @@ jobs:
     - name: Launch container
       run: |
         lxc launch '${{ inputs.lxc-image }}' lxc-container
-        sleep 10
     - name: Push snap to lxc container
       run: |
         cd ${{ inputs.snap-name }}-${{ inputs.branch-name }}
-        lxc file push ${{ inputs.snap-name }}_*.snap lxc-container/
+        lxc file push ${{ inputs.snap-name }}_*.snap lxc-container/root/
     - name: Install snap with flags
       if: inputs.snap-install-args != ''
       run: |
         lxc list
-        lxc exec lxc-container -- sh -c "cd .. && sudo snap install ${{ inputs.snap-name }}_*.snap '${{ inputs.snap-install-args }}'"
+        lxc exec lxc-container -- sh -c "sudo snap install ${{ inputs.snap-name }}_*.snap '${{ inputs.snap-install-args }}'"
     - name: Install snap without flags
       if: inputs.snap-install-args == ''
       run: |
-        lxc exec lxc-container -- sh -c "cd .. && sudo snap install ${{ inputs.snap-name }}_*.snap"
+        lxc exec lxc-container -- sh -c "sudo snap install ${{ inputs.snap-name }}_*.snap"
     - name: Run custom test script
       shell: bash
       run: |
         cat > test-script.sh << 'EOF'
           ${{ inputs.test-script }}
         EOF
-        lxc file push test-script.sh lxc-container/
-        lxc exec lxc-container -- sh -c "cd .. && bash /test-script.sh"
+        lxc file push test-script.sh lxc-container/root/
+        lxc exec lxc-container -- sh -c "bash /test-script.sh"

@@ -80,4 +80,4 @@ jobs:
           ${{ inputs.test-script }}
         EOF
         lxc file push test-script.sh lxc-container/root/
-        lxc exec lxc-container -- sh -c "bash /test-script.sh"
+        lxc exec lxc-container -- sh -c "bash test-script.sh"

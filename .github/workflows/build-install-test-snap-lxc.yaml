@@ -59,6 +59,7 @@ jobs:
     - name: Launch container
       run: |
         lxc launch '${{ inputs.lxc-image }}' lxc-container
+        sleep 10 ## TODO(investigate): without sleep the next steps are flaky
     - name: Push snap to lxc container
       run: |
         cd ${{ inputs.snap-name }}-${{ inputs.branch-name }}

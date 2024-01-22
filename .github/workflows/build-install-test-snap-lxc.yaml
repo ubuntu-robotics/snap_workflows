@@ -54,30 +54,28 @@ jobs:
         path: .
     - name: Setup LXD
       uses: canonical/setup-lxd@v0.1.1
-      with:
-        channel: latest/stable
     - name: Launch container
       run: |
         lxc launch '${{ inputs.lxc-image }}' lxc-container
-        sleep 10 ## TODO(investigate): without sleep the next steps are flaky
+        lxc exec lxc-container -- cloud-init status --wait
     - name: Push snap to lxc container
       run: |
         cd ${{ inputs.snap-name }}-${{ inputs.branch-name }}
-        lxc file push ${{ inputs.snap-name }}_*.snap lxc-container/root/
+        lxc file push ${{ inputs.snap-name }}_*.snap lxc-container/home/ubuntu/
     - name: Install snap with flags
       if: inputs.snap-install-args != ''
       run: |
         lxc list
-        lxc exec lxc-container -- sh -c "sudo snap install ${{ inputs.snap-name }}_*.snap '${{ inputs.snap-install-args }}'"
+        lxc exec lxc-container -- sh -c "sudo snap install /home/ubuntu/${{ inputs.snap-name }}_*.snap '${{ inputs.snap-install-args }}'"
     - name: Install snap without flags
       if: inputs.snap-install-args == ''
       run: |
-        lxc exec lxc-container -- sh -c "sudo snap install ${{ inputs.snap-name }}_*.snap"
+        lxc exec lxc-container -- sh -c "sudo snap install /home/ubuntu/${{ inputs.snap-name }}_*.snap"
     - name: Run custom test script
       shell: bash
       run: |
         cat > test-script.sh << 'EOF'
           ${{ inputs.test-script }}
         EOF
-        lxc file push test-script.sh lxc-container/root/
+        lxc file push test-script.sh lxc-container/home/ubuntu/
         lxc exec lxc-container -- sh -c "bash test-script.sh"

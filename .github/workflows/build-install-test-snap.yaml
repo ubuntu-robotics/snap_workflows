@@ -36,6 +36,7 @@ jobs:
     runs-on: '${{ inputs.ubuntu-image }}'
     outputs:
       snap-file: ${{ steps.build-snap.outputs.snap }}
+      ros-logs: ${{ steps.ros-logs.outputs.roslogs }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -66,6 +67,7 @@ jobs:
           ${{ inputs.test-script }}
         EOF
         bash test-script.sh
+      id: ros-logs
     # Do some default testing with the snap
     - name: Test info snap
       if: inputs.test-script == ''

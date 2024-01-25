@@ -20,6 +20,10 @@ on:
       snapcraft-args:
         required: false
         type: string
+      snapcraft-build-path:
+        required: false
+        type: string
+        default: "."
       snap-install-args:
         required: false
         type: string
@@ -45,6 +49,7 @@ jobs:
       env:
         SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS : '${{ inputs.enable-experimental-extensions-env }}'
       with:
+        path: ${{ inputs.snapcraft-build-path }}
         snapcraft-channel: '${{ inputs.snapcraft-channel }}'
         snapcraft-args: '${{ inputs.snapcraft-args }}'
       id: build-snap

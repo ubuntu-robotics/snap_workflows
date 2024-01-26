@@ -128,3 +128,5 @@ jobs:
     needs: [publish, test]
     steps:
       - uses: geekyeggo/delete-artifact@v4
+        name: |
+          ${{ inputs.snap-name }}-*

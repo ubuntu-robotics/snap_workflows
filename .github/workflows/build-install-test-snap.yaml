@@ -132,5 +132,7 @@ jobs:
       - run: |
           ls
           pwd
+          cd ..
+          pwd
       - uses: geekyeggo/delete-artifact@v4
         name: ${{ inputs.snap-name }}-${{needs.build.outputs.upload-branch-name}}

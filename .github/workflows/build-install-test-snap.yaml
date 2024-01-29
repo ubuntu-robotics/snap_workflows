@@ -90,6 +90,9 @@ jobs:
           SNAPCRAFT_INSTALL_ARGS : '${{ inputs.snap-install-args }}'
         run: |
           sudo snap install ${{needs.build.outputs.snap-file}} $SNAPCRAFT_INSTALL_ARGS
+      - name: Snap info
+        run: |
+          snap info ${{ inputs.snap-name }}
       - name: Run custom test script
         if: inputs.test-script != ''
         shell: bash
@@ -98,9 +101,7 @@ jobs:
             ${{ inputs.test-script }}
           EOF
           bash test-script.sh
-      - name: Snap info
-        run: |
-          snap info ${{ inputs.snap-name }}
+
 
   publish:
     if: inputs.publish == true && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
@@ -113,7 +114,7 @@ jobs:
       with:
         name: ${{ inputs.snap-name }}-${{needs.build.outputs.upload-branch-name}}
         path: .
-  
+
     - name: Publish snap
       uses: snapcore/action-publish@v1
       env:
@@ -129,5 +130,4 @@ jobs:
     needs: [build, test]
     steps:
       - uses: geekyeggo/delete-artifact@v4
-        name: |
-          ${{ inputs.snap-name }}-*
+        name: ${{ inputs.snap-name }}-*

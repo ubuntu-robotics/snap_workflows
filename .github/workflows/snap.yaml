@@ -1,4 +1,4 @@
-name: build-install-test-snap
+name: snap
 
 on:
   workflow_call:

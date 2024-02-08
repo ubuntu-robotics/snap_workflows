@@ -129,10 +129,5 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, test]
     steps:
-      - run: |
-          ls
-          pwd
-          cd ..
-          pwd
       - uses: geekyeggo/delete-artifact@v4
-        name: ${{ inputs.snap-name }}-${{needs.build.outputs.upload-branch-name}}
+        name: ${{ inputs.snap-name }}-*

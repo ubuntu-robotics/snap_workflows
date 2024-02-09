@@ -8,8 +8,8 @@ Having reusable workflows helps with the execution of scheduled workflows and re
 
 In this repository there are two reusable workflows:
 
-- [build-install-test-snap.yaml](https://github.com/ubuntu-robotics/snap_workflows/blob/main/.github/workflows/build-install-test-snap.yaml): this reusable workflow provides a template for building, installing and testing snaps. It provides various inputs to flexibly build snaps and it also allows the user to pass a custom bash script that can be used for testing.
-- [build-install-test-snap-lxc.yaml](https://github.com/ubuntu-robotics/snap_workflows/blob/main/.github/workflows/build-install-test-snap-lxc.yaml): this reusable workflow uses the previous workflow to build snaps, but then it uses lxc containers to perform testing. This is useful in case we need to perform testing with the snap on deprecated images (e.g. ubuntu 18.04).
+- [snap.yaml](https://github.com/ubuntu-robotics/snap_workflows/blob/main/.github/workflows/snap.yaml): this reusable workflow provides a template for building, installing and testing snaps. It provides various inputs to flexibly build snaps and it also allows the user to pass a custom bash script that can be used for testing.
+- [snap-lxc.yaml](https://github.com/ubuntu-robotics/snap_workflows/blob/main/.github/workflows/snap-lxc.yaml): this reusable workflow uses the previous workflow to build snaps, but then it uses lxc containers to perform testing. This is useful in case we need to perform testing with the snap on deprecated images (e.g. ubuntu 18.04).
 
 
 ## How to use
@@ -20,7 +20,7 @@ Below is shown an example on how to call these reusable workflows in a github re
 ```
 jobs:
   main-snap:
-    uses: ubuntu-robotics/snap_workflows/.github/workflows/build-install-test-snap.yaml@main
+    uses: ubuntu-robotics/snap_workflows/.github/workflows/snap.yaml@main
     with:
       branch-name: main   ## this is the branch containing the snapcraft.yaml that we want to build
       snap-name: ros2-talker-listener

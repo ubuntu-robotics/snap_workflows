@@ -131,7 +131,7 @@ jobs:
     needs: [build, publish]
     steps:
       - uses: geekyeggo/delete-artifact@v4
-        name: ${{ inputs.snap-name }}-${{needs.build.outputs.upload-branch-name}}
+        name: ${{ inputs.snap-name }}-*
         with:
+          name: ${{ inputs.snap-name }}-*
           token: ${{ secrets.GITHUB_TOKEN }}
-

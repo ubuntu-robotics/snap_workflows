@@ -135,13 +135,11 @@ jobs:
         with:
           name: ${{ inputs.snap-name }}-${{needs.build.outputs.upload-branch-name}}
           path: ${{ inputs.snapcraft-build-path }}
-      - name: Check folder before clean
-        run: |
-          pwd
-          ls
+      - name: Upload snap artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.snap-name }}-${{ steps.branch-name.outputs.BRANCH_NAME }}
+          path: ${{ steps.build-snap.outputs.snap }}
       - uses: geekyeggo/delete-artifact@v4
         name: ${{ inputs.snap-name }}-*
-      - name: check forlder after clean
-        run: |
-          pwd
-          ls
+

@@ -36,7 +36,7 @@ on:
 
 jobs:
   build:
-    uses: ubuntu-robotics/snap_workflows/.github/workflows/build-install-test-snap.yaml@main
+    uses: ubuntu-robotics/snap_workflows/.github/workflows/snap.yaml@main
     with:
       ubuntu-image: ${{ inputs.ubuntu-image }}
       snapcraft-channel: ${{ inputs.snapcraft-channel }}
@@ -65,14 +65,12 @@ jobs:
     - name: Push snap to lxc container
       run: |
         lxc file push ${{ inputs.snap-name }}-${{ inputs.branch-name }}/${{ inputs.snap-name }}_*.snap lxc-container/home/ubuntu/
-    - name: Install snap with flags
-      if: inputs.snap-install-args != ''
+    - name: Install snap
+      env:
+        SNAPCRAFT_INSTALL_ARGS : '${{ inputs.snap-install-args }}'
       run: |
-        lxc exec lxc-container -- sh -c "snap install /home/ubuntu/${{ inputs.snap-name }}_*.snap '${{ inputs.snap-install-args }}'"
-    - name: Install snap without flags
-      if: inputs.snap-install-args == ''
-      run: |
-        lxc exec lxc-container -- sh -c "snap install /home/ubuntu/${{ inputs.snap-name }}_*.snap"
+        lxc exec lxc-container -- sh -c "snap install /home/ubuntu/${{ inputs.snap-name }}_*.snap $SNAPCRAFT_INSTALL_ARGS
+
     - name: Run custom test script
       shell: bash
       run: |

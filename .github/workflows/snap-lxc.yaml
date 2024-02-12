@@ -43,6 +43,7 @@ jobs:
       branch-name: ${{ inputs.branch-name }}
       snap-name: ${{ inputs.snap-name }}
       snap-install-args: ${{ inputs.snap-install-args }}
+      cleanup: false
 
   test-on-lxc:
     runs-on: ubuntu-latest

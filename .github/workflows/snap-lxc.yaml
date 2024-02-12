@@ -84,7 +84,7 @@ jobs:
   cleanup:
     if: ${{ always() && !cancelled() && needs.build.result == 'success' && inputs.cleanup == true }}
     runs-on: ubuntu-latest
-    needs: [build, publish]
+    needs: [build]
     steps:
       - name: Delete artifact
         uses: geekyeggo/delete-artifact@v4

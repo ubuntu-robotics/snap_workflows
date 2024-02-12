@@ -130,6 +130,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, publish]
     steps:
+      - name: Download snap artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.snap-name }}-${{needs.build.outputs.upload-branch-name}}
+          path: ${{ inputs.snapcraft-build-path }}
       - name: Check folder before clean
         run: |
           pwd

@@ -72,7 +72,7 @@ jobs:
       run: |
         echo "BRANCH_NAME=$(echo ${{ inputs.branch-name }} | sed "s|\/|\-|")" >> "$GITHUB_OUTPUT"
     - name: Upload snap artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.snap-name }}-${{ steps.branch-name.outputs.BRANCH_NAME }}
         path: ${{ steps.build-snap.outputs.snap }}
@@ -83,7 +83,7 @@ jobs:
     needs: build
     steps:
       - name: Download snap artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.snap-name }}-${{needs.build.outputs.upload-branch-name}}
           path: ${{ inputs.snapcraft-build-path }}
@@ -111,7 +111,7 @@ jobs:
 
     steps:
     - name: Download snap artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: ${{ inputs.snap-name }}-${{needs.build.outputs.upload-branch-name}}
         path: .
@@ -131,7 +131,6 @@ jobs:
     needs: [build, publish]
     steps:
       - name: Delete artifact
-        uses: geekyeggo/delete-artifact@v2
+        uses: geekyeggo/delete-artifact@v4
         with:
           name: ${{ inputs.snap-name }}-*
-          token: ${{ secrets.GITHUB_TOKEN }}

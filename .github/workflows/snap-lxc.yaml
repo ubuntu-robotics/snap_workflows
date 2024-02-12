@@ -70,7 +70,7 @@ jobs:
       env:
         SNAPCRAFT_INSTALL_ARGS : '${{ inputs.snap-install-args }}'
       run: |
-        lxc exec lxc-container -- sh -c "snap install /home/ubuntu/${{ inputs.snap-name }}_*.snap $SNAPCRAFT_INSTALL_ARGS
+        lxc exec lxc-container -- sh -c "snap install /home/ubuntu/${{ inputs.snap-name }}_*.snap $SNAPCRAFT_INSTALL_ARGS"
 
     - name: Run custom test script
       shell: bash

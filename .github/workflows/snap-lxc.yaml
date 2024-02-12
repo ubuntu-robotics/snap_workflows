@@ -80,3 +80,13 @@ jobs:
         EOF
         lxc file push test-script.sh lxc-container/home/ubuntu/
         lxc exec --user 1000 lxc-container -- sh -c "bash /home/ubuntu/test-script.sh"
+
+  cleanup:
+    if: ${{ always() && !cancelled() && needs.build.result == 'success' && inputs.cleanup == true }}
+    runs-on: ubuntu-latest
+    needs: [build, publish]
+    steps:
+      - name: Delete artifact
+        uses: geekyeggo/delete-artifact@v4
+        with:
+          name: ${{ inputs.snap-name }}-*

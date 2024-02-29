@@ -126,7 +126,7 @@ jobs:
       uses: snapcore/action-publish@v1
       env:
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
-      if: env.SNAPCRAFT_STORE_CREDENTIALS
+      if: ${{ env.SNAPCRAFT_STORE_CREDENTIALS != '' }}
       with:
         snap: ${{needs.build.outputs.snap-file}}
         release: ${{ inputs.publish-track }}/${{ startsWith(github.ref, 'refs/tags/') && 'candidate' || 'edge'}}

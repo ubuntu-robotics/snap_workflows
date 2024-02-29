@@ -33,7 +33,7 @@ on:
         required: false
         type: boolean
       test-script:
-        description: "Custom script to run some custom snap testing"
+        description: "custom script to run some custom snap testing"
         required: false
         type: string
       publish:
@@ -41,6 +41,11 @@ on:
         required: false
         type: boolean
         default: false
+      publish-track:
+        description: "Snap Store channel track use for publication"
+        required: false
+        type: string
+        default: latest
       cleanup:
         description: "whether to cleanup artifacts"
         required: false
@@ -106,7 +111,7 @@ jobs:
           bash test-script.sh
 
   publish:
-    if: inputs.publish == true && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+    if: inputs.publish == true && (github.ref == '${{ inputs.branch-name }}' || startsWith(github.ref, 'refs/tags/'))
     runs-on: ubuntu-latest
     needs: [build, test]
 
@@ -124,7 +129,7 @@ jobs:
       if: env.SNAPCRAFT_STORE_CREDENTIALS
       with:
         snap: ${{needs.build.outputs.snap-file}}
-        release: ${{ startsWith(github.ref, 'refs/tags/') && 'candidate' || 'edge'}}
+        release: ${{ inputs.publish-track }}/${{ startsWith(github.ref, 'refs/tags/') && 'candidate' || 'edge'}}
 
   cleanup:
     if: ${{ always() && !cancelled() && needs.build.result == 'success' && inputs.cleanup == true }}

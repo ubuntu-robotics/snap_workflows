@@ -54,7 +54,7 @@ on:
     secrets:
       store-login:
         description: "Snap Store credential exported with snapcraft export-login"
-        required: true
+        required: false
 
 jobs:
   build:

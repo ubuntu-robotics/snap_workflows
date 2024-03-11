@@ -17,7 +17,7 @@ on:
       branch-name:
         required: false
         type: string
-        default: "main"
+        default: '${{ github.ref }}'
       snapcraft-args:
         required: false
         type: string
@@ -79,7 +79,7 @@ jobs:
     - name: Branch name
       id: branch-name
       run: |
-        echo "BRANCH_NAME=$(echo ${{ inputs.branch-name }} | sed "s|\/|\-|")" >> "$GITHUB_OUTPUT"
+        echo "BRANCH_NAME=$(echo ${{ inputs.branch-name }} | sed "s|\/|\-|g")" >> "$GITHUB_OUTPUT"
     - name: Upload snap artifact
       uses: actions/upload-artifact@v4
       with:
@@ -114,7 +114,7 @@ jobs:
           bash test-script.sh
 
   publish:
-    if: inputs.publish == true && (github.ref == 'refs/heads/${{ inputs.branch-name }}' || startsWith(github.ref, 'refs/tags/'))
+    if: inputs.publish == true
     runs-on: ubuntu-latest
     needs: [build, test]
 

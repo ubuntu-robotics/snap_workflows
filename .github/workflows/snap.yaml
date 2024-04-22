@@ -18,6 +18,10 @@ on:
         required: false
         type: string
         default: '${{ github.ref }}'
+      architecture:
+        required: false
+        type: string
+        default: "amd64"
       snapcraft-args:
         required: false
         type: string
@@ -86,7 +90,44 @@ jobs:
         name: ${{ inputs.snap-name }}-${{ steps.branch-name.outputs.BRANCH_NAME }}
         path: ${{ steps.build-snap.outputs.snap }}
         retention-days: 14
-  
+
+  build-arm:
+    runs-on: '${{ inputs.ubuntu-image }}'
+    outputs:
+      snap-file: ${{ steps.build-snap.outputs.snap }}
+      upload-branch-name: ${{ steps.branch-name.outputs.BRANCH_NAME }}
+    env:
+      # snapcraft remote-build will create a repository with the name decided by the --build-id arg
+      # URL to this repo echoed below to help debug builds (does not change if the workflow is re-run)
+      SNAPCRAFT_BUILDER_ID: ${{ github.run_id }}
+    steps:
+      - name: Checkout snapcraft.yaml branch
+        uses: actions/checkout@v4
+        with:
+          ref: '${{ inputs.branch-name }}'
+      - name: Add LP credentials
+        run: |
+          mkdir -p ~/.local/share/snapcraft/provider/launchpad/
+          echo '${{ secrets.LP_CREDS }}' > ~/.local/share/snapcraft/provider/launchpad/credentials
+          git config --global user.email "canonical-robotics-brand@canonical.com"
+          git config --global user.name "Canonical robotics"
+      - name: Print Launchpad build repository
+        run: |
+          echo "Building at: https://git.launchpad.net/~ce-certification-qa/+snap/$SNAPCRAFT_BUILDER_ID"
+      - uses: snapcore/action-build@v1
+        env:
+          SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS : '${{ inputs.enable-experimental-extensions-env }}'
+        with:
+          path: ${{ inputs.snapcraft-build-path }}
+          snapcraft-channel: "${{ inputs.snapcraft-channel }}"
+          snapcraft-args: "remote-build --launchpad-accept-public-upload --build-id ${{ inputs.snap-name }}-${SNAPCRAFT_BUILDER_ID}"
+      - name: Upload snap artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.snap-name }}-${{ steps.branch-name.outputs.BRANCH_NAME }}
+          path: ${{ steps.build-snap.outputs.snap }}
+          retention-days: 14
+
   test:
     runs-on: '${{ inputs.ubuntu-image }}'
     needs: build

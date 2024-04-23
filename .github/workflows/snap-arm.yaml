@@ -61,7 +61,7 @@ on:
         required: false
 
 jobs:
-  build-arm:
+  build:
     runs-on: '${{ inputs.ubuntu-image }}'
     outputs:
       snap-file: ${{ steps.build-snap.outputs.snap }}

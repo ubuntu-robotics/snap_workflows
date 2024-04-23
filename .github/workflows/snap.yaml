@@ -21,7 +21,7 @@ on:
       architecture:
         required: false
         type: string
-        default: "amd64"
+        default: ""
       snapcraft-args:
         required: false
         type: string
@@ -62,6 +62,7 @@ on:
 
 jobs:
   build:
+    if: inputs.architecture == "amd64"
     runs-on: '${{ inputs.ubuntu-image }}'
     outputs:
       snap-file: ${{ steps.build-snap.outputs.snap }}
@@ -92,6 +93,7 @@ jobs:
         retention-days: 14
 
   build-arm:
+    if: inputs.architecture == "arm64"
     runs-on: '${{ inputs.ubuntu-image }}'
     outputs:
       snap-file: ${{ steps.build-snap.outputs.snap }}

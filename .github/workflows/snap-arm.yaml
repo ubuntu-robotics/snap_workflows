@@ -87,6 +87,7 @@ jobs:
       - uses: snapcore/action-build@v1
         env:
           SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS : '${{ inputs.enable-experimental-extensions-env }}'
+          SNAPCRAFT_REMOTE_BUILD_STRATEGY: 'disable-fallback'
         with:
           path: ${{ inputs.snapcraft-build-path }}
           snapcraft-channel: "${{ inputs.snapcraft-channel }}"

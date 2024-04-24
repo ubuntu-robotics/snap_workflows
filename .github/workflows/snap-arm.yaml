@@ -59,6 +59,9 @@ on:
       store-login:
         description: "Snap Store credential exported with snapcraft export-login"
         required: false
+      launchpad-creds:
+        description: "Launchpad credentials"
+        required: true
 
 jobs:
   build:
@@ -79,7 +82,7 @@ jobs:
       - name: Add LP credentials
         run: |
           mkdir -p ~/.local/share/snapcraft/provider/launchpad/
-          echo '${{ secrets.LP_CREDS }}' > ~/.local/share/snapcraft/provider/launchpad/credentials
+          echo '${{ secrets.launchpad-creds }}' > ~/.local/share/snapcraft/provider/launchpad/credentials
           git config --global user.email "canonical-robotics-brand@canonical.com"
           git config --global user.name "Canonical robotics"
       - name: Print Launchpad build repository

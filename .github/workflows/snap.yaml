@@ -63,13 +63,14 @@ jobs:
       list_of_params: ${{ steps.setVariables.outputs.list_of_params }}
     steps:
       - id: setVariables
-        run: |
-          echo "Debugging json inputs ${{ inputs.ubuntu-image }}"
-          echo "Debugging json inputs ${{ fromJSON('["a", "b"]') }}"
-          echo "Debugging json inputs ${{ fromJSON('data=["a", "b"]') }}"
           echo "list_of_params=$input" >> $GITHUB_OUTPUT
         env:
           input: ${{ inputs.ubuntu-image }}
+      - run: echo "Debugging json inputs ${{ inputs.ubuntu-image }}"
+        env:
+          input: ${{ inputs.ubuntu-image }}
+      - run: echo "Debugging json inputs ${{ fromJSON('["a", "b"]') }}"
+      - run: echo "Debugging json inputs ${{ fromJSON('data=["a", "b"]') }}"          
   build:
     needs: setup
     runs-on: ${{fromJSON(needs.setup.outputs.list_of_params)}}

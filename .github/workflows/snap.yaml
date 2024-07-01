@@ -63,7 +63,7 @@ jobs:
       list_of_params: ${{ steps.setVariables.outputs.list_of_params }}
     steps:
       - id: setVariables
-          echo "list_of_params=$input" >> $GITHUB_OUTPUT
+        run: echo "list_of_params=$input" >> $GITHUB_OUTPUT
         env:
           input: ${{ inputs.ubuntu-image }}
       - run: echo "Debugging json inputs ${{ inputs.ubuntu-image }}"

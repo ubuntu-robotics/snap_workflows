@@ -70,7 +70,6 @@ jobs:
         env:
           input: ${{ inputs.ubuntu-image }}
       - run: echo "Debugging json inputs ${{ fromJSON('["a", "b"]') }}"
-      - run: echo "Debugging json inputs ${{ fromJSON('data=["a", "b"]') }}"          
   build:
     needs: setup
     runs-on: ${{fromJSON(needs.setup.outputs.list_of_params)}}

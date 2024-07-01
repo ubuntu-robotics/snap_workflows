@@ -66,7 +66,7 @@ jobs:
         run: |
           echo "Debugging json inputs ${{ inputs.ubuntu-image }}"
           echo "Debugging json inputs ${{ fromJSON('["a", "b"]') }}"
-          echo "Debugging json inputs ${{ fromJSON(["a", "b"]) }}"
+          # error at compile time: echo "Debugging json inputs ${{ fromJSON(["a", "b"]) }}"
           echo "Debugging json inputs ${{ fromJSON('data=["a", "b"]') }}"
           echo "list_of_params=$input" >> $GITHUB_OUTPUT
         env:

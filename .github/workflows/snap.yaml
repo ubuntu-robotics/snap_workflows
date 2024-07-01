@@ -57,8 +57,20 @@ on:
         required: false
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      list_of_params: ${{ steps.setVariables.outputs.list_of_params }}
+    steps:
+      - id: setVariables
+        run: |
+          echo "Debugging json inputs ${{ inputs.ubuntu-image }},  ${{ fromJSON(inputs.ubuntu-image) }}"
+          echo "::set-output name=list_of_params::$input"
+        env:
+          input: ${{ inputs.ubuntu-image }}
   build:
-    runs-on: ${{ fromJSON(inputs.ubuntu-image) }}
+    needs: setup
+    runs-on: ${{fromJSON(needs.setup.outputs.list_of_params)}}
     outputs:
       snap-file: ${{ steps.build-snap.outputs.snap }}
       upload-branch-name: ${{ steps.branch-name.outputs.BRANCH_NAME }}

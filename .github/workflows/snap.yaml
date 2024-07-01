@@ -64,7 +64,7 @@ jobs:
     steps:
       - id: setVariables
         run: |
-          echo "Debugging json inputs ${{ inputs.ubuntu-image }},  ${{ fromJSON($input) }}"
+          echo "Debugging json inputs ${{ inputs.ubuntu-image }},  ${{ fromJSON(env.input) }}"
           echo "list_of_params=$input" >> $GITHUB_OUTPUT
         env:
           input: ${{ inputs.ubuntu-image }}

@@ -111,7 +111,7 @@ jobs:
           cat > test-script.sh << 'EOF'
             ${{ inputs.test-script }}
           EOF
-          bash test-script.sh
+          bash -e test-script.sh
 
   publish:
     if: inputs.publish == true

@@ -57,12 +57,27 @@ on:
         required: false
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      list_of_params: ${{ steps.setVariables.outputs.list_of_params }}
+    steps:
+      - id: setVariables
+        run: echo "list_of_params=$input" >> $GITHUB_OUTPUT
+        env:
+          input: ${{ inputs.ubuntu-image }}
+      - run: echo "Debugging json inputs ${{ fromJSON(inputs.ubuntu-image) }}"
+        env:
+          input: ${{ inputs.ubuntu-image }}
+      - run: echo "Debugging json inputs ${{ fromJSON('["a", "b"]') }}"
   build:
-    runs-on: '${{ inputs.ubuntu-image }}'
+    needs: setup
+    runs-on: ${{fromJSON(needs.setup.outputs.list_of_params)}}
     outputs:
       snap-file: ${{ steps.build-snap.outputs.snap }}
       upload-branch-name: ${{ steps.branch-name.outputs.BRANCH_NAME }}
     steps:
+    - run: echo "Debugging json inputs ${{ inputs.ubuntu-image }},  ${{ fromJSON(inputs.ubuntu-image) }}"
     - name: Checkout snapcraft.yaml branch
       uses: actions/checkout@v4
       with:

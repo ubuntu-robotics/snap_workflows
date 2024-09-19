@@ -1,3 +1,6 @@
+# Archived repo
+This repository has been archived in favor of [robotics action workflows](https://github.com/canonical/robotics-actions-workflows).
+
 # snap_workflows
 
 Repository storing [reusable workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows) for snaps.

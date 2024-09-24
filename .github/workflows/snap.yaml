@@ -68,7 +68,7 @@ jobs:
       with:
         ref: '${{ inputs.branch-name }}'
     - name: Build snap
-      uses: snapcore/action-build@v1
+      uses: canonical/action-build@v1
       id: build-snap
       env:
         SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS : '${{ inputs.enable-experimental-extensions-env }}'
@@ -125,7 +125,7 @@ jobs:
         name: ${{ inputs.snap-name }}-${{needs.build.outputs.upload-branch-name}}
         path: ${{ inputs.snapcraft-build-path }}
     - name: Publish snap
-      uses: snapcore/action-publish@v1
+      uses: canonical/action-publish@v1
       env:
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.store-login }}
       if: env.SNAPCRAFT_STORE_CREDENTIALS
